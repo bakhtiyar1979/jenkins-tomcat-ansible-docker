@@ -1,0 +1,18 @@
+- hosts: ansible
+
+  tasks:
+
+  - name: Create docker image
+    command: docker build -t register-app-image:latest .
+    args:
+      chdir: /opt/docker
+
+  - name: create image tag
+    command: docker tag register-app-image orchsky/register-app-image
+
+  - name: Push image to dockerhub
+    command: docker push orchsky/register-app-image
+
+  - name: Remove image from vm
+    command: docker rmi register-app-image:latest orchsky/register-app-image
+    ignore_errors: yes

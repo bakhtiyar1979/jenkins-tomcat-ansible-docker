@@ -1,0 +1,25 @@
+--- 
+- hosts: ansible 
+  gather_facts: false
+
+  tasks:
+
+  - name: Stop docker container 
+    command: docker stop register-app-container
+    ignore_errors: yes 
+
+  - name: Remove stopped docker container
+    command: docker rm register-app-container
+    ignore_errors: yes 
+
+  - name: Remove docker image
+    command: docker rmi register-app-image
+    ignore_errors: yes
+
+  - name: Build docker image 
+    command: docker build -t register-app-image .
+    args:
+      chdir: /opt/docker
+
+  - name: Create container from image
+    command: docker run -d --name register-app-container -p 8080:8080 register-app-image
